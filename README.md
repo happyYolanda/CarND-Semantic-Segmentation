@@ -2,6 +2,12 @@
 ### Introduction
 In this project, you'll label the pixels of a road in images using a Fully Convolutional Network (FCN).
 
+### Model Description
+A pre-trained VGG-16 network was converted to a fully convolutional network by converting the final fully connected layer to a 1x1 convolution and setting the depth equal to the number of desired classes. I use cross-entropy as loss function. The hyperparameters are: keep_prob=0.5, learning_rate=0.0009, epochs=50, batch_size=5. 
+
+In sample_images folder, i put ten pictures from output of the network.
+
+
 ### Setup
 ##### GPU
 `main.py` will check to make sure you are using GPU - if you don't have a GPU on your system, you can use AWS or another cloud computing platform.
