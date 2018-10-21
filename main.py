@@ -59,21 +59,17 @@ def layers(vgg_layer3_out, vgg_layer4_out, vgg_layer7_out, num_classes):
                                    padding= 'same', 
                                    kernel_initializer= tf.random_normal_initializer(stddev=0.01),
                                    kernel_regularizer= tf.contrib.layers.l2_regularizer(1e-3))
-    # upsample
     layer4a_in1 = tf.layers.conv2d_transpose(layer7a_out, num_classes, 4, 
                                              strides= (2, 2), 
                                              padding= 'same', 
                                              kernel_initializer= tf.random_normal_initializer(stddev=0.01), 
                                              kernel_regularizer= tf.contrib.layers.l2_regularizer(1e-3))
-    # make sure the shapes are the same!
     # 1x1 convolution of vgg layer 4
     layer4a_in2 = tf.layers.conv2d(vgg_layer4_out, num_classes, 1, 
                                    padding= 'same', 
                                    kernel_initializer= tf.random_normal_initializer(stddev=0.01), 
                                    kernel_regularizer= tf.contrib.layers.l2_regularizer(1e-3))
-    # skip connection (element-wise addition)
     layer4a_out = tf.add(layer4a_in1, layer4a_in2)
-    # upsample
     layer3a_in1 = tf.layers.conv2d_transpose(layer4a_out, num_classes, 4,  
                                              strides= (2, 2), 
                                              padding= 'same', 
@@ -84,9 +80,7 @@ def layers(vgg_layer3_out, vgg_layer4_out, vgg_layer7_out, num_classes):
                                    padding= 'same', 
                                    kernel_initializer= tf.random_normal_initializer(stddev=0.01), 
                                    kernel_regularizer= tf.contrib.layers.l2_regularizer(1e-3))
-    # skip connection (element-wise addition)
     layer3a_out = tf.add(layer3a_in1, layer3a_in2)
-    # upsample
     nn_last_layer = tf.layers.conv2d_transpose(layer3a_out, num_classes, 16,  
                                                strides= (8, 8), 
                                                padding= 'same', 
@@ -108,9 +102,7 @@ def optimize(nn_last_layer, correct_label, learning_rate, num_classes):
     # TODO: Implement function
     logits = tf.reshape(nn_last_layer, (-1, num_classes))
     correct_label = tf.reshape(correct_label, (-1,num_classes))
-    # define loss function
     cross_entropy_loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits= logits, labels= correct_label))
-    # define training operation
     optimizer = tf.train.AdamOptimizer(learning_rate= learning_rate)
     train_op = optimizer.minimize(cross_entropy_loss)
 
@@ -174,7 +166,6 @@ def run():
         # TODO: Build NN using load_vgg, layers, and optimize function
         epochs = 50
         batch_size = 5
-        # TF placeholders
         correct_label = tf.placeholder(tf.int32, [None, None, None, num_classes], name='correct_label')
         learning_rate = tf.placeholder(tf.float32, name='learning_rate')
 
@@ -189,7 +180,6 @@ def run():
              correct_label, keep_prob, learning_rate)
 
         # TODO: Save inference data using helper.save_inference_samples
-        #  helper.save_inference_samples(runs_dir, data_dir, sess, image_shape, logits, keep_prob, input_image)
         helper.save_inference_samples(runs_dir, data_dir, sess, image_shape, logits, keep_prob, input_image)
 
         # OPTIONAL: Apply the trained model to a video
